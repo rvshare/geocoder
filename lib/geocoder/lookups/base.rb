@@ -197,6 +197,8 @@ module Geocoder
         raise_error(err) or Geocoder.log(:warn, "Geocoding API connection cannot be established.")
       rescue Errno::ECONNREFUSED => err
         raise_error(err) or Geocoder.log(:warn, "Geocoding API connection refused.")
+      rescue Geocoder::NetworkError => err
+        raise_error(err) or Geocoder.log(:warn, "Geocoding API connection is either unreacheable or reset by the peer")
       rescue Timeout::Error => err
         raise_error(err) or Geocoder.log(:warn, "Geocoding API not responding fast enough " +
           "(use Geocoder.configure(:timeout => ...) to set limit).")
@@ -209,7 +211,10 @@ module Geocoder
           JSON.parse(data)
         end
       rescue
-        raise_error(ResponseParseError.new(data)) or Geocoder.log(:warn, "Geocoding API's response was not valid JSON: #{data}")
+        unless raise_error(ResponseParseError.new(data))
+          Geocoder.log(:warn, "Geocoding API's response was not valid JSON")
+          Geocoder.log(:debug, "Raw response: #{data}")
+        end
       end
 
       ##

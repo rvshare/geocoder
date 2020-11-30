@@ -1,29 +1,27 @@
 Geocoder
 ========
 
-**A complete geocoding solution for Ruby.**
+**Complete geocoding solution for Ruby.**
 
 [![Gem Version](https://badge.fury.io/rb/geocoder.svg)](http://badge.fury.io/rb/geocoder)
 [![Code Climate](https://codeclimate.com/github/alexreisner/geocoder/badges/gpa.svg)](https://codeclimate.com/github/alexreisner/geocoder)
 [![Build Status](https://travis-ci.org/alexreisner/geocoder.svg?branch=master)](https://travis-ci.org/alexreisner/geocoder)
-[![GitHub Issues](https://img.shields.io/github/issues/alexreisner/geocoder.svg)](https://github.com/alexreisner/geocoder/issues)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Key features:
 
-* Forward and reverse geocoding, and IP address geocoding.
+* Forward and reverse geocoding.
+* IP address geocoding.
 * Connects to more than 40 APIs worldwide.
 * Performance-enhancing features like caching.
-* Advanced configuration allows different parameters and APIs to be used in different conditions.
 * Integrates with ActiveRecord and Mongoid.
 * Basic geospatial queries: search within radius (or rectangle, or ring).
 
 Compatibility:
 
-* Supports multiple Ruby versions: Ruby 2.x, and JRuby.
-* Supports multiple databases: MySQL, PostgreSQL, SQLite, and MongoDB (1.7.0 and higher).
-* Supports Rails 3, 4, and 5. If you need to use it with Rails 2 please see the `rails2` branch (no longer maintained, limited feature set).
-* Works very well outside of Rails, you just need to install either the `json` (for MRI) or `json_pure` (for JRuby) gem.
+* Ruby versions: 2.x, and JRuby.
+* Databases: MySQL, PostgreSQL, SQLite, and MongoDB.
+* Rails: 4, 5, and 6.
+* Works outside of Rails with the `json` (for MRI) or `json_pure` (for JRuby) gem.
 
 
 Table of Contents
@@ -45,7 +43,7 @@ Advanced Features:
 * [Geospatial Calculations](#geospatial-calculations)
 * [Batch Geocoding](#batch-geocoding)
 * [Testing](#testing)
-* [Error Handling](#error-handing)
+* [Error Handling](#error-handling)
 * [Command Line Interface](#command-line-interface)
 
 The Rest:
@@ -215,7 +213,7 @@ Some common options are:
       # set default units to kilometers:
       units: :km,
 
-      # caching (see [below](#caching) for details):
+      # caching (see Caching section below for details):
       cache: Redis.new,
       cache_prefix: "..."
 
@@ -224,15 +222,15 @@ Some common options are:
 Please see [`lib/geocoder/configuration.rb`](https://github.com/alexreisner/geocoder/blob/master/lib/geocoder/configuration.rb) for a complete list of configuration options. Additionally, some lookups have their own special configuration options which are directly supported by Geocoder. For example, to specify a value for Google's `bounds` parameter:
 
     # with Google:
-    Geocoder.search("Paris", bounds: [[32.1,-95.9], [33.9,-94.3]])
+    Geocoder.search("Middletown", bounds: [[40.6,-77.9], [39.9,-75.9]])
 
 Please see the [source code for each lookup](https://github.com/alexreisner/geocoder/tree/master/lib/geocoder/lookups) to learn about directly supported parameters. Parameters which are not directly supported can be specified using the `:params` option, which appends options to the query string of the geocoding request. For example:
 
     # Nominatim's `countrycodes` parameter:
-    Geocoder.search("Paris", params: {countrycodes: "gb,de,fr,es,us"})
+    Geocoder.search("Rome", params: {countrycodes: "us,ca"})
 
     # Google's `region` parameter:
-    Geocoder.search("Paris", params: {region: "..."})
+    Geocoder.search("Rome", params: {region: "..."})
 
 ### Configuring Multiple Services
 
@@ -500,9 +498,9 @@ To avoid exceeding per-day limits you can add a `LIMIT` option. However, this wi
 Testing
 -------
 
-When writing tests for an app that uses Geocoder it may be useful to avoid network calls and have Geocoder return consistent, configurable results. To do this, configure the `:test` lookup:
+When writing tests for an app that uses Geocoder it may be useful to avoid network calls and have Geocoder return consistent, configurable results. To do this, configure the `:test` lookup and/or `:ip_lookup`
 
-    Geocoder.configure(lookup: :test)
+    Geocoder.configure(lookup: :test, ip_lookup: :test)
 
 Add stubs to define the results that will be returned:
 
@@ -534,10 +532,14 @@ With the above stub defined, any query for "New York, NY" will return the result
       ]
     )
 
+You may also delete a single stub, or reset all stubs _including the default stub_:
+
+    Geocoder::Lookup::Test.delete_stub('New York, NY')
+    Geocoder::Lookup::Test.reset
+
 Notes:
 
 - Keys must be strings (not symbols) when calling `add_stub` or `set_default_stub`. For example `'country' =>` not `:country =>`.
-- To clear stubs (e.g. prior to another spec), use `Geocoder::Lookup::Test.reset`. This will clear all stubs _including the default stub_.
 - The stubbed result objects returned by the Test lookup do not support all the methods real result objects do. If you need to test interaction with real results it may be better to use an external stubbing tool and something like WebMock or VCR to prevent network calls.
 
 
@@ -703,4 +705,4 @@ For all contributions, please respect the following guidelines:
 * If your pull request is merged, please do not ask for an immediate release of the gem. There are many factors contributing to when releases occur (remember that they affect thousands of apps with Geocoder in their Gemfiles). If necessary, please install from the Github source until the next official release.
 
 
-Copyright (c) 2009-18 Alex Reisner, released under the MIT license.
+Copyright :copyright: 2009-2020 Alex Reisner, released under the MIT license.

@@ -12,7 +12,7 @@ class EsriTest < GeocoderTestCase
     query = Geocoder::Query.new("Bluffton, SC")
     lookup = Geocoder::Lookup.get(:esri)
     res = lookup.query_url(query)
-    assert_equal "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/find?f=pjson&outFields=%2A&text=Bluffton%2C+SC",
+    assert_equal "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/find?f=pjson&outFields=%2A&text=Bluffton%2C+SC",
       res
   end
 
@@ -24,6 +24,14 @@ class EsriTest < GeocoderTestCase
     assert_match %r{sourceCountry=USA}, url
   end
 
+  def test_query_for_geocode_with_preferred_label_values
+    Geocoder.configure(esri: {preferred_label_values: 'localCity'})
+    query = Geocoder::Query.new("Bluffton, SC")
+    lookup = Geocoder::Lookup.get(:esri)
+    url = lookup.query_url(query)
+    assert_match %r{preferredLabelValues=localCity}, url
+  end
+
   def test_query_for_geocode_with_token_and_for_storage
     token = Geocoder::EsriToken.new('xxxxx', Time.now + 60*60*24)
     Geocoder.configure(esri: {token: token, for_storage: true})
@@ -32,6 +40,24 @@ class EsriTest < GeocoderTestCase
     url = lookup.query_url(query)
     assert_match %r{forStorage=true}, url
     assert_match %r{token=xxxxx}, url
+  end
+
+  def test_token_from_options
+    options_token = Geocoder::EsriToken.new('options_token', Time.now + 60*60*24)
+    query = Geocoder::Query.new("Bluffton, SC", token: options_token)
+    lookup = Geocoder::Lookup.get(:esri)
+    url = lookup.query_url(query)
+    assert_match %r{token=options_token}, url
+  end
+
+  def test_token_from_options_overrides_configuration
+    config_token = Geocoder::EsriToken.new('config_token', Time.now + 60*60*24)
+    options_token = Geocoder::EsriToken.new('options_token', Time.now + 60*60*24)
+    Geocoder.configure(esri: { token: config_token })
+    query = Geocoder::Query.new("Bluffton, SC", token: options_token)
+    lookup = Geocoder::Lookup.get(:esri)
+    url = lookup.query_url(query)
+    assert_match %r{token=options_token}, url
   end
 
   def test_query_for_geocode_with_config_for_storage_false
@@ -85,7 +111,7 @@ class EsriTest < GeocoderTestCase
     query = Geocoder::Query.new([45.423733, -75.676333])
     lookup = Geocoder::Lookup.get(:esri)
     res = lookup.query_url(query)
-    assert_equal "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&location=-75.676333%2C45.423733&outFields=%2A",
+    assert_equal "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&location=-75.676333%2C45.423733&outFields=%2A",
       res
   end
 

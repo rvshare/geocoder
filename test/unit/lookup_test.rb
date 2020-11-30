@@ -13,6 +13,7 @@ class LookupTest < GeocoderTestCase
 
   def test_search_returns_empty_array_when_no_results
     Geocoder::Lookup.all_services_except_test.each do |l|
+      next if [:ipgeolocation, :nationaal_georegister_nl].include?(l) # lookups that always return a result
       lookup = Geocoder::Lookup.get(l)
       set_api_key!(l)
       silence_warnings do
@@ -24,7 +25,7 @@ class LookupTest < GeocoderTestCase
 
   def test_query_url_contains_values_in_params_hash
     Geocoder::Lookup.all_services_except_test.each do |l|
-      next if [:freegeoip, :maxmind_local, :telize, :pointpin, :geoip2, :maxmind_geoip2, :mapbox, :ipdata_co, :ipinfo_io, :ipapi_com, :ipstack, :postcodes_io].include? l # does not use query string
+      next if [:freegeoip, :maxmind_local, :telize, :pointpin, :geoip2, :maxmind_geoip2, :mapbox, :ipdata_co, :ipinfo_io, :ipapi_com, :ipregistry, :ipstack, :postcodes_io, :uk_ordnance_survey_names].include? l # does not use query string
       set_api_key!(l)
       url = Geocoder::Lookup.get(l).query_url(Geocoder::Query.new(
         "test", :params => {:one_in_the_hand => "two in the bush"}
@@ -43,7 +44,7 @@ class LookupTest < GeocoderTestCase
     :mapquest => :key,
     :maxmind => :l,
     :nominatim => :"accept-language",
-    :yandex => :plng
+    :yandex => :lang
   }.each do |l,p|
     define_method "test_passing_param_to_#{l}_query_overrides_configuration_value" do
       set_api_key!(l)
@@ -56,10 +57,12 @@ class LookupTest < GeocoderTestCase
   end
 
   {
+    :bing => :language,
     :google => :language,
     :google_premier => :language,
+    :here => :language,
     :nominatim => :"accept-language",
-    :yandex => :plng
+    :yandex => :lang
   }.each do |l,p|
     define_method "test_passing_language_to_#{l}_query_overrides_configuration_value" do
       set_api_key!(l)
@@ -144,13 +147,19 @@ class LookupTest < GeocoderTestCase
   def test_telize_api_key
     Geocoder.configure(:api_key => "MY_KEY")
     g = Geocoder::Lookup::Telize.new
-    assert_match "mashape-key=MY_KEY", g.query_url(Geocoder::Query.new("232.65.123.94"))
+    assert_match "rapidapi-key=MY_KEY", g.query_url(Geocoder::Query.new("232.65.123.94"))
   end
 
   def test_ipinfo_io_api_key
     Geocoder.configure(:api_key => "MY_KEY")
     g = Geocoder::Lookup::IpinfoIo.new
     assert_match "token=MY_KEY", g.query_url(Geocoder::Query.new("232.65.123.94"))
+  end
+
+  def test_ipregistry_api_key
+    Geocoder.configure(:api_key => "MY_KEY")
+    g = Geocoder::Lookup::Ipregistry.new
+    assert_match "key=MY_KEY", g.query_url(Geocoder::Query.new("232.65.123.94"))
   end
 
   def test_amap_api_key

@@ -33,8 +33,7 @@ module Geocoder::Lookup
         return []
       end
       if doc = doc['response']['GeoObjectCollection']
-        meta = doc['metaDataProperty']['GeocoderResponseMetaData']
-        return meta['found'].to_i > 0 ? doc['featureMember'] : []
+        return doc['featureMember'].to_a
       else
         Geocoder.log(:warn, "Yandex Geocoding API error: unexpected response format.")
         return []
@@ -50,8 +49,8 @@ module Geocoder::Lookup
       params = {
         :geocode => q,
         :format => "json",
-        :plng => "#{query.language || configuration.language}", # supports ru, uk, be
-        :key => configuration.api_key
+        :lang => "#{query.language || configuration.language}", # supports ru, uk, be, default -> ru
+        :apikey => configuration.api_key
       }
       unless (bounds = query.options[:bounds]).nil?
         params[:bbox] = bounds.map{ |point| "%f,%f" % point }.join('~')

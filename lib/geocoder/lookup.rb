@@ -33,17 +33,18 @@ module Geocoder
         :google_places_search,
         :bing,
         :geocoder_ca,
-        :geocoder_us,
         :yandex,
+        :nationaal_georegister_nl,
         :nominatim,
         :mapbox,
         :mapquest,
-        :mapzen,
+        :uk_ordnance_survey_names,
         :opencagedata,
         :pelias,
         :pickpoint,
         :here,
         :baidu,
+        :tencent,
         :geocodio,
         :smarty_streets,
         :postcode_anywhere_uk,
@@ -52,7 +53,8 @@ module Geocoder
         :ban_data_gouv_fr,
         :test,
         :latlon,
-        :amap
+        :amap,
+        :osmnames
       ]
     end
 
@@ -70,11 +72,13 @@ module Geocoder
         :pointpin,
         :maxmind_geoip2,
         :ipinfo_io,
+        :ipregistry,
         :ipapi_com,
         :ipdata_co,
         :db_ip_com,
         :ipstack,
-        :ip2location
+        :ip2location,
+        :ipgeolocation
       ]
     end
 

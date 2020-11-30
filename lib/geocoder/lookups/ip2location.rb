@@ -19,15 +19,16 @@ module Geocoder::Lookup
     end
 
     def query_url_params(query)
-      {
-        key: configuration.api_key ? configuration.api_key : "demo",
-        format: "json",
-        ip: query.sanitized_text
-      }.merge(super)
+      params = super
+      if configuration.has_key?(:package)
+        params.merge!(package: configuration[:package])
+      end
+      params
     end
 
     def results(query)
-      return [reserved_result(query.text)] if query.loopback_ip_address?
+      # don't look up a loopback or private address, just return the stored result
+      return [reserved_result(query.text)] if query.internal_ip_address?
       return [] unless doc = fetch_data(query)
       if doc["response"] == "INVALID ACCOUNT"
         raise_error(Geocoder::InvalidApiKey) || Geocoder.log(:warn, "INVALID ACCOUNT")
@@ -60,14 +61,6 @@ module Geocoder::Lookup
         "elevation"            => "INVALID IP ADDRESS",
         "usage_type"           => "INVALID IP ADDRESS"
       }
-    end
-
-    def query_url_params(query)
-      params = super
-      if configuration.has_key?(:package)
-        params.merge!(package: configuration[:package])
-      end
-      params
     end
 
   end

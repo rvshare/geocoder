@@ -9,6 +9,10 @@ module Geocoder::Lookup
       "Esri"
     end
 
+      def supported_protocols
+        [:https]
+      end
+
     private # ---------------------------------------------------------------
 
     def base_query_url(query)
@@ -40,11 +44,15 @@ module Geocoder::Lookup
       else
         params[:text] = query.sanitized_text
       end
-      params[:token] = token
+
+      params[:token] = token(query)
+
       if for_storage_value = for_storage(query)
         params[:forStorage] = for_storage_value
       end
       params[:sourceCountry] = configuration[:source_country] if configuration[:source_country]
+      params[:preferredLabelValues] = configuration[:preferred_label_values] if configuration[:preferred_label_values]
+
       params.merge(super)
     end
 
@@ -56,25 +64,38 @@ module Geocoder::Lookup
       end
     end
 
-    def token
-      create_and_save_token! if !valid_token_configured? and configuration.api_key
-      configuration[:token].to_s unless configuration[:token].nil?
+    def token(query)
+      token_instance = if query.options[:token]
+                         query.options[:token]
+                       else
+                         configuration[:token]
+                       end
+
+      if !valid_token_configured?(token_instance) && configuration.api_key
+        token_instance = create_and_save_token!(query)
+      end
+
+      token_instance.to_s unless token_instance.nil?
     end
 
-    def valid_token_configured?
-      !configuration[:token].nil? and configuration[:token].active?
+    def valid_token_configured?(token_instance)
+      !token_instance.nil? && token_instance.active?
     end
 
-    def create_and_save_token!
-      save_token!(create_token)
+    def create_and_save_token!(query)
+      token_instance = create_token
+
+      if query.options[:token]
+        query.options[:token] = token_instance
+      else
+        Geocoder.merge_into_lookup_config(:esri, token: token_instance)
+      end
+
+      token_instance
     end
 
     def create_token
       Geocoder::EsriToken.generate_token(*configuration.api_key)
-    end
-
-    def save_token!(token_instance)
-      Geocoder.merge_into_lookup_config(:esri, token: token_instance)
     end
   end
 end

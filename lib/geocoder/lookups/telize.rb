@@ -16,7 +16,7 @@ module Geocoder::Lookup
       if configuration[:host]
         "#{protocol}://#{configuration[:host]}/location/#{query.sanitized_text}"
       else
-        "#{protocol}://telize-v1.p.mashape.com/location/#{query.sanitized_text}?mashape-key=#{api_key}"
+        "#{protocol}://telize-v1.p.rapidapi.com/location/#{query.sanitized_text}?rapidapi-key=#{api_key}"
       end
     end
 
@@ -34,8 +34,8 @@ module Geocoder::Lookup
     end
 
     def results(query)
-      # don't look up a loopback address, just return the stored result
-      return [reserved_result(query.text)] if query.loopback_ip_address?
+      # don't look up a loopback or private address, just return the stored result
+      return [reserved_result(query.text)] if query.internal_ip_address?
       if (doc = fetch_data(query)).nil? or doc['code'] == 401 or empty_result?(doc)
         []
       else
