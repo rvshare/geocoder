@@ -18,74 +18,68 @@ module Geocoder::Lookup
 
     private
 
-    def base_query_url(query)
-      place_id = query.text
-      "#{protocol}://places.googleapis.com/v1/places/#{place_id}?"
+    def base_url
+      "#{protocol}://places.googleapis.com/v1/places"
     end
 
-    def make_api_request(query)
-      uri = URI.parse(query_url(query))
-
-      Geocoder.log(:debug, "Request URL: #{uri}")
-
-      # Create a new HTTP request
-      http_client.start(uri.host, uri.port, use_ssl: true) do |client|
-        req = Net::HTTP::Get.new(uri.request_uri)
-        req["X-Goog-Api-Key"] = configuration.api_key
-        req["X-Goog-FieldMask"] = "displayName,formattedAddress,location"
-
-        Geocoder.log(:debug, "Headers: #{req.to_hash.inspect}")
-
-        response = client.request(req)
-        Geocoder.log(:debug, "Response code: #{response.code}")
-
-        response_body = response.body[0..300]
-        Geocoder.log(:debug, "Response: #{response_body}...")
-
-        response
+    def base_query_url(query)
+      # Check if place_id already has places/ prefix
+      place_id = query.text
+      unless place_id.start_with?('places/')
+        place_id = "#{place_id}"
       end
+
+      # Encode the place ID to handle special characters
+      encoded_place_id = URI.encode_www_form_component(place_id)
+      "#{base_url}/#{encoded_place_id}?"
     end
 
     def valid_response?(response)
       json = parse_json(response.body)
-      return false unless json
-      return true unless json["error"]
-      false
+      error_status = json.dig('error', 'status') if json
+      super(response) and error_status.nil?
     end
 
     def results(query)
       doc = fetch_data(query)
       return [] unless doc
 
-      # Check for errors
-      if doc["error"]
-        error_message = doc["error"]["message"]
-        error_status = doc["error"]["status"]
-
-        Geocoder.log(:warn, "Error: #{error_status} - #{error_message}")
+      if doc['error']
+        case doc['error']['status']
+        when 'RESOURCE_EXHAUSTED'
+          raise_error(Geocoder::OverQueryLimitError) ||
+            Geocoder.log(:warn, "#{name} API error: resource exhausted.")
+        when 'PERMISSION_DENIED'
+          raise_error(Geocoder::RequestDenied, doc['error']['message']) ||
+            Geocoder.log(:warn, "#{name} API error: permission denied (#{doc['error']['message']}).")
+        when 'INVALID_ARGUMENT'
+          raise_error(Geocoder::InvalidRequest, doc['error']['message']) ||
+            Geocoder.log(:warn, "#{name} API error: invalid argument (#{doc['error']['message']}).")
+        end
         return []
       end
 
-      # Return the place data
       [doc]
     end
 
     def query_url_params(query)
-      # No URL parameters needed - they all go in headers
-      {}
+      params = {}
+      params[:languageCode] = query.language || configuration.language if query.language || configuration.language
+      params[:regionCode] = query.options[:region] if query.options[:region]
+      params
     end
 
     def default_field_mask
       # Must properly format fields according to Google Place API requirements
       [
         "id",
-        "displayName",
+        "displayName.text",
         "formattedAddress",
         "location",
         "types",
         "websiteUri",
         "rating",
-        "userRatingsTotal",
+        "userRatingCount",
         "priceLevel",
         "businessStatus",
         "regularOpeningHours",
@@ -112,6 +106,30 @@ module Geocoder::Lookup
       return if flattened.empty?
 
       flattened.join(',')
+    end
+
+    def make_api_request(query)
+      uri = URI.parse(query_url(query))
+
+      Geocoder.log(:debug, "Making request to: #{uri}")
+
+      response = http_client.start(uri.host, uri.port, use_ssl: use_ssl?) do |client|
+        req = Net::HTTP::Get.new(uri.request_uri)
+        req["X-Goog-Api-Key"] = configuration.api_key
+
+        # Add the FieldMask header with proper formatting
+        field_mask = query.options[:fields] || configuration[:fields] || default_field_mask
+        req["X-Goog-FieldMask"] = field_mask
+
+        Geocoder.log(:debug, "Using headers: #{req.to_hash.inspect}")
+
+        client.request(req)
+      end
+
+      Geocoder.log(:debug, "Response code: #{response.code}")
+      Geocoder.log(:debug, "Response body: #{response.body[0..200]}...")
+
+      response
     end
   end
 end

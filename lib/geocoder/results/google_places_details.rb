@@ -4,10 +4,8 @@ module Geocoder::Result
   class GooglePlacesDetails < Base
 
     def coordinates
-      if @data.dig('location', 'latitude') && @data.dig('location', 'longitude')
+      if @data.dig('location')
         [@data.dig('location', 'latitude'), @data.dig('location', 'longitude')]
-      elsif @data.dig('geometry', 'location', 'lat') && @data.dig('geometry', 'location', 'lng')
-        [@data.dig('geometry', 'location', 'lat'), @data.dig('geometry', 'location', 'lng')]
       else
         []
       end
@@ -18,19 +16,15 @@ module Geocoder::Result
     end
 
     def formatted_address
-      @data['formattedAddress'] || @data['formatted_address']
+      @data['formattedAddress']
     end
 
     def name
-      if @data.dig('displayName', 'text')
-        @data.dig('displayName', 'text')
-      else
-        @data['name']
-      end
+      @data.dig('displayName', 'text')
     end
 
     def place_id
-      @data['id'] || @data['place_id']
+      @data['id']
     end
 
     def types
@@ -38,11 +32,11 @@ module Geocoder::Result
     end
 
     def website
-      @data['websiteUri'] || @data['website']
+      @data['websiteUri']
     end
 
     def url
-      @data['url'] || @data['googleMapsUri']
+      @data['googleMapsUri']
     end
 
     def rating
@@ -58,27 +52,25 @@ module Geocoder::Result
     end
 
     def phone_number
-      @data['international_phone_number'] || @data['internationalPhoneNumber']
+      @data['internationalPhoneNumber']
     end
 
     def user_ratings_total
-      @data['userRatingsTotal'] || @data['user_ratings_total']
+      @data['userRatingCount']
     end
     alias_method :rating_count, :user_ratings_total
 
     def business_status
-      @data['business_status'] || @data['businessStatus']
+      @data['businessStatus']
     end
 
     def price_level
-      @data['price_level'] || @data['priceLevel']
+      @data['priceLevel']
     end
 
     def open_hours
       if @data['regularOpeningHours'] && @data['regularOpeningHours']['periods']
         @data['regularOpeningHours']['periods']
-      elsif @data['opening_hours'] && @data['opening_hours']['periods']
-        @data['opening_hours']['periods']
       else
         []
       end
@@ -87,29 +79,24 @@ module Geocoder::Result
     def open_now
       if @data['regularOpeningHours']
         @data.dig('regularOpeningHours', 'openNow')
-      elsif @data['opening_hours']
-        @data.dig('opening_hours', 'open_now')
       end
     end
 
     def permanently_closed?
-      business_status == 'CLOSED_PERMANENTLY' || business_status == 'PERMANENTLY_CLOSED'
+      business_status == 'CLOSED_PERMANENTLY'
     end
 
     def address_components
-      @data['addressComponents'] || @data['address_components'] || []
+      @data['addressComponents'] || []
     end
 
-    def street_number
-      address_component('street_number', 'short_name')
-    end
+    def address_components_of_type(type)
+      return [] if address_components.empty?
 
-    def route
-      address_component('route', 'long_name')
-    end
-
-    def street_address
-      [street_number, route].compact.join(' ')
+      address_components.select do |c|
+        types = c['types'] || []
+        types.any?{ |t| type.to_s === t }
+      end
     end
 
     def city
@@ -140,18 +127,19 @@ module Geocoder::Result
       address_component('neighborhood', 'long_name')
     end
 
-    ##
-    # Get address components of a given type. Type can be a String or an Array
-    # of Strings. Returns an Array of components.
-    #
-    def address_components_of_type(type)
-      return [] if address_components.empty?
-
-      address_components.select do |c|
-        types = c['types'] || []
-        types.any?{ |t| type.to_s === t }
-      end
+    def street_number
+      address_component('street_number', 'short_name')
     end
+
+    def route
+      address_component('route', 'long_name')
+    end
+
+    def street_address
+      [street_number, route].compact.join(' ')
+    end
+
+    private
 
     def address_component(component_type, value_type)
       components = address_components_of_type(component_type)
@@ -160,9 +148,9 @@ module Geocoder::Result
       component = components.first
 
       if value_type == 'short_name'
-        component['shortName'] || component['short_name']
-      else
-        component['longName'] || component['long_name']
+        component['shortText']
+      else # long_name
+        component['longText']
       end
     end
   end
