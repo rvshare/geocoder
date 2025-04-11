@@ -91,7 +91,6 @@ module Geocoder
               "types",
               "websiteUri",
               "rating",
-              "userRatingsTotal",
               "priceLevel",
               "businessStatus",
               "regularOpeningHours",
@@ -157,7 +156,7 @@ module Geocoder
         if use_new_places_api
           basic = %w[businessStatus formattedAddress location viewport iconMaskBaseUri iconBackgroundColor displayName photos id plusCode types]
           contact = %w[regularOpeningHours]
-          atmosphere = %W[priceLevel rating userRatingsTotal]
+          atmosphere = %W[priceLevel rating userRatingCount]
         else
           basic = %w[business_status formatted_address geometry icon name photos place_id plus_code types]
           contact = %w[opening_hours]
