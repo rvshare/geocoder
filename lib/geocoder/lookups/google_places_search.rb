@@ -4,6 +4,7 @@ require "json"
 
 module Geocoder
   module Lookup
+    # Updated to exclusively use Google Places API v1 (Search Text)
     class GooglePlacesSearch < Google
       def name
         "Google Places Search"
@@ -19,166 +20,124 @@ module Geocoder
 
       private
 
+      # v1 API returns results under the 'places' key
       def result_root_attr
-        use_new_places_api = @query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
-        use_new_places_api ? 'places' : 'candidates'
+        'places'
       end
 
+      # v1 API endpoint for Search Text
       def base_query_url(query)
-        use_new_places_api = query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
-        if use_new_places_api
-          "#{protocol}://places.googleapis.com/v1/places:searchText?"
-        else
-          "#{protocol}://maps.googleapis.com/maps/api/place/findplacefromtext/json?"
-        end
+        "#{protocol}://places.googleapis.com/v1/places:searchText?"
       end
 
-      def query_url(query)
-        use_new_places_api = query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
-        @query = query
-
-        if use_new_places_api
-          base_query_url(query) + url_query_string(query)
-        else
-          super(query)
-        end
-      end
-
+      # For v1, URL parameters are minimal; main query goes in POST body
       def query_url_params(query)
-        use_new_places_api = query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
-
-        if use_new_places_api
-          query_url_google_params(query).merge(super.except(:key))
-        else
-          super
-        end
+        params = {}
+        params[:languageCode] = query.language || configuration.language if query.language || configuration.language
+        params[:regionCode] = query.options[:region] if query.options[:region]
+        # API key is sent in header, not here
+        params
       end
 
+      # v1 API uses POST with a JSON body
       def make_api_request(query)
-        use_new_places_api = query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
-        @query = query
+        @query = query # Ensure query is stored for result parsing if needed
+        uri = URI.parse(query_url(query))
 
-        if use_new_places_api
-          uri = URI.parse(query_url(query))
-          http_client.start(uri.host, uri.port, use_ssl: use_ssl?) do |client|
-            req = Net::HTTP::Post.new(uri.request_uri)
-            req.body = request_body_json(query)
-            req["Content-Type"] = "application/json"
-            req["X-Goog-Api-Key"] = configuration.api_key
-            client.request(req)
-          end
-        else
-          super(query)
+        Geocoder.log(:debug, "Making POST request to: #{uri}")
+
+        http_client.start(uri.host, uri.port, use_ssl: use_ssl?) do |client|
+          req = Net::HTTP::Post.new(uri.request_uri)
+          req.body = request_body_json(query)
+          req["Content-Type"] = "application/json"
+          req["X-Goog-Api-Key"] = configuration.api_key
+          # Note: Field mask for Search Text is in the request body (:includedFields)
+
+          Geocoder.log(:debug, "Request Body: #{req.body}")
+          Geocoder.log(:debug, "Headers: #{req.to_hash.inspect}")
+
+          response = client.request(req)
+
+          Geocoder.log(:debug, "Response code: #{response.code}")
+          Geocoder.log(:debug, "Response body: #{response.body[0..300]}...")
+          response
         end
       end
 
+      # Builds the JSON request body for the v1 Search Text API
       def request_body_json(query)
-        use_new_places_api = query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
-        if use_new_places_api
-          body = {
-            textQuery: query.text
-          }
+        body = {
+          textQuery: query.text
+        }
 
-          body[:locationBias] = locationbias(query) if locationbias(query)
-          body[:languageCode] = query.language || configuration.language if query.language || configuration.language
+        body[:locationBias] = locationbias(query) if locationbias(query)
+        # Language code is now a top-level param in the body too
+        body[:languageCode] = query.language || configuration.language if query.language || configuration.language
 
-          body[:includedFields] = {
-            paths: [
-              "id",
-              "displayName.text",
-              "formattedAddress",
-              "location",
-              "types",
-              "websiteUri",
-              "rating",
-              "priceLevel",
-              "businessStatus",
-              "regularOpeningHours",
-              "photos"
-            ]
-          }
+        # Use includedFields for the field mask in the v1 API
+        fields_to_include = query.options[:fields] || configuration[:fields] || default_fields_for_mask
+        body[:includedFields] = {
+          paths: fields_to_include.split(',')
+        }
 
-          JSON.generate(body)
-        else
-          nil
-        end
+        JSON.generate(body)
       end
 
-      def query_url_google_params(query)
-        @query = query
-        use_new_places_api = query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
-
-        if use_new_places_api
-          {}
-        else
-          {
-            input: query.text,
-            inputtype: 'textquery',
-            fields: fields(query),
-            locationbias: locationbias(query),
-            language: query.language || configuration.language
-          }
-        end
-      end
-
-      def fields(query)
-        if query.options.has_key?(:fields)
-          return format_fields(query.options[:fields])
-        end
-
-        if configuration.has_key?(:fields)
-          return format_fields(configuration[:fields])
-        end
-
-        default_fields
-      end
-
+      # Default fields for the v1 API field mask (:includedFields)
       def default_fields_for_mask
         [
           "id",
           "displayName.text",
           "formattedAddress",
-          "location",
+          "location", # Includes latitude and longitude
           "types",
           "websiteUri",
           "rating",
-          "userRatingsTotal",
+          "userRatingCount", # Note: userRatingCount, not userRatingsTotal
           "priceLevel",
           "businessStatus",
           "regularOpeningHours",
           "photos"
-        ]
+        ].join(',')
       end
 
-      def default_fields
-        use_new_places_api = @query.options.fetch(:use_new_places_api, configuration.use_new_places_api)
+      # Removed fields() and default_fields() as they were tied to the legacy API format.
+      # Use :fields option in configuration or per-query for customization.
 
-        if use_new_places_api
-          basic = %w[businessStatus formattedAddress location viewport iconMaskBaseUri iconBackgroundColor displayName photos id plusCode types]
-          contact = %w[regularOpeningHours]
-          atmosphere = %W[priceLevel rating userRatingCount]
-        else
-          basic = %w[business_status formatted_address geometry icon name photos place_id plus_code types]
-          contact = %w[opening_hours]
-          atmosphere = %W[price_level rating user_ratings_total]
-        end
-
-        format_fields(basic, contact, atmosphere)
-      end
-
+      # Formats fields - kept in case needed for :fields option parsing
       def format_fields(*fields)
         flattened = fields.flatten.compact
         return if flattened.empty?
-
         flattened.join(',')
       end
 
+      # Location bias helper
       def locationbias(query)
-        if query.options.has_key?(:locationbias)
-          query.options[:locationbias]
-        else
-          configuration[:locationbias]
+        query.options[:locationbias] || configuration[:locationbias]
+      end
+
+      # Overriding error handling for v1 API format
+      def results(query)
+        doc = fetch_data(query)
+        return [] unless doc
+
+        if doc['error']
+          case doc['error']['status']
+          when 'RESOURCE_EXHAUSTED'
+            raise_error(Geocoder::OverQueryLimitError) ||
+              Geocoder.log(:warn, "#{name} API error: resource exhausted.")
+          when 'PERMISSION_DENIED'
+            raise_error(Geocoder::RequestDenied, doc['error']['message']) ||
+              Geocoder.log(:warn, "#{name} API error: permission denied (#{doc['error']['message']}).")
+          when 'INVALID_ARGUMENT'
+            raise_error(Geocoder::InvalidRequest, doc['error']['message']) ||
+              Geocoder.log(:warn, "#{name} API error: invalid argument (#{doc['error']['message']}).")
+          end
+          return []
         end
+
+        # v1 returns places under the 'places' key
+        doc['places'] || []
       end
     end
   end

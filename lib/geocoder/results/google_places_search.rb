@@ -1,98 +1,104 @@
 require "geocoder/results/base"
 
 module Geocoder::Result
+  # Result class for Google Places API v1 (Search Text)
   class GooglePlacesSearch < Base
     def coordinates
-      [@data.dig('geometry', 'location', 'lat'), @data.dig('geometry', 'location', 'lng')]
+      # Use v1 location format
+      if @data.dig('location')
+        [@data.dig('location', 'latitude'), @data.dig('location', 'longitude')]
+      else
+        []
+      end
     end
 
-    def place_id
-      @data['place_id']
-    end
-
-    def types
-      @data['types'] || []
+    def address
+      formatted_address
     end
 
     def formatted_address
-      @data['formatted_address']
+      # Use v1 format
+      @data['formattedAddress']
     end
-    alias_method :address, :formatted_address
 
     def name
-      @data["displayName"] ? @data["displayName"]["text"] : @data["name"]
+      # Use v1 format
+      @data.dig('displayName', 'text')
+    end
+
+    def place_id
+      # Use v1 format
+      @data['id']
+    end
+
+    def types
+      # Use v1 format
+      @data['types'] || []
+    end
+
+    def website
+      # Use v1 format
+      @data['websiteUri']
     end
 
     def rating
-      @data["rating"]
+      # Use v1 format
+      @data['rating']
     end
 
     def photos
-      @data["photos"]
+      # Use v1 format
+      @data['photos'] || []
     end
-
-    def short_formatted_address
-      @data["vicinity"] || @data["shortFormattedAddress"]
-    end
-    alias_method :vicinity, :short_formatted_address
 
     def price_level
-      @data["price_level"] || @data["priceLevel"]
+      # Use v1 format
+      @data['priceLevel']
     end
 
     def rating_count
-      @data["user_ratings_total"] || @data["userRatingsTotal"]
-    end
-
-    def attributions
-      @data["html_attributions"] || @data["attributions"]
+      # Use v1 format
+      @data['userRatingCount']
     end
 
     def business_status
-      @data["business_status"] || @data["businessStatus"]
+      # Use v1 format
+      @data['businessStatus']
     end
 
-    def city
-      ""
+    def open_hours
+      # Use v1 format
+      if @data['regularOpeningHours'] && @data['regularOpeningHours']['periods']
+        @data['regularOpeningHours']['periods']
+      else
+        []
+      end
     end
 
-    def state
-      ""
+    def open_now
+      # Use v1 format
+      if @data['regularOpeningHours']
+        @data.dig('regularOpeningHours', 'openNow')
+      end
     end
 
-    def state_code
-      ""
-    end
-
-    def province
-      ""
-    end
-
-    def province_code
-      ""
-    end
-
-    def postal_code
-      ""
-    end
-
-    def country
-      ""
-    end
-
-    def country_code
-      ""
-    end
-
-    # Access to viewport
-    def viewport
-      return nil unless @data["viewport"]
-      [
-        @data["viewport"]["southwest"]["lat"],
-        @data["viewport"]["southwest"]["lng"],
-        @data["viewport"]["northeast"]["lat"],
-        @data["viewport"]["northeast"]["lng"]
-      ]
-    end
+    # Methods below are typically not available or reliable from Search Text
+    # Keeping them empty or returning nil to avoid errors if called
+    def city; nil; end
+    def state; nil; end
+    def state_code; nil; end
+    def country; nil; end
+    def country_code; nil; end
+    def postal_code; nil; end
+    def neighborhood; nil; end
+    def street_number; nil; end
+    def route; nil; end
+    def street_address; nil; end
+    def vicinity; formatted_address; end # Use formattedAddress as a fallback
+    def attributions; nil; end # Attributions not typically in Search Text
+    def viewport; nil; end # Viewport not typically in Search Text
+    def phone_number; nil; end # Phone number not typically in Search Text
+    def reviews; []; end # Reviews not typically in Search Text
+    def short_formatted_address; formatted_address; end # Fallback
   end
 end
