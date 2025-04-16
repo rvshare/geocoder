@@ -1,7 +1,7 @@
-require "geocoder/results/base"
+require "geocoder/results/google"
 
 module Geocoder::Result
-  class GooglePlacesDetails < Base
+  class GooglePlacesDetails < Google
 
     def coordinates
       if @data.dig('location')
@@ -24,27 +24,27 @@ module Geocoder::Result
     end
 
     def place_id
-      @data['id']
+      @data["id"]
     end
 
     def types
-      @data['types'] || []
+      @data["types"] || []
     end
 
     def website
-      @data['websiteUri']
+      @data["websiteUri"]
     end
 
     def url
-      @data['googleMapsUri']
+      @data["googleMapsUri"]
     end
 
     def rating
-      @data['rating']
+      @data["rating"]
     end
 
     def reviews
-      @data['reviews'] || []
+      @data["reviews"] || []
     end
 
     def photos
@@ -52,20 +52,20 @@ module Geocoder::Result
     end
 
     def phone_number
-      @data['internationalPhoneNumber']
+      @data["internationalPhoneNumber"]
     end
 
     def user_ratings_total
-      @data['userRatingCount']
+      @data["userRatingCount"]
     end
     alias_method :rating_count, :user_ratings_total
 
     def business_status
-      @data['businessStatus']
+      @data["businessStatus"]
     end
 
     def price_level
-      @data['priceLevel']
+      @data["priceLevel"]
     end
 
     def open_hours

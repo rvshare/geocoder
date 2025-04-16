@@ -1,8 +1,8 @@
-require "geocoder/results/base"
+require "geocoder/results/google"
 
 module Geocoder::Result
   # Result class for Google Places API v1 (Search Text)
-  class GooglePlacesSearch < Base
+  class GooglePlacesSearch < Google
     def coordinates
       # Use v1 location format
       if @data.dig('location')
@@ -10,6 +10,14 @@ module Geocoder::Result
       else
         []
       end
+    end
+
+    def latitude
+      coordinates[0]
+    end
+
+    def longitude
+      coordinates[1]
     end
 
     def address

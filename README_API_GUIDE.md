@@ -146,7 +146,7 @@ Similar to `:google`, with the following differences:
 * **Key signup**: https://developers.google.com/maps/premium/
 * **Quota**: 100,000 requests/24 hrs, 10 requests/second
 
-### Google Places Details
+### Google Places Details (`:google_places_details`)
 
 The [Google Places Details API](https://developers.google.com/maps/documentation/places/web-service/details) is the detailed places information service of Google Maps Places API. For a comparison between this and the regular Google Geocoding API, see https://maps-apis.googleblog.com/2016/11/address-geocoding-in-google-maps-apis.html
 
@@ -161,32 +161,7 @@ The [Google Places Details API](https://developers.google.com/maps/documentation
 * **Limitations**: No city data returned if only administrative areas present.
 * **Notes**: You must have already obtained the Place ID from the Place Autocomplete API which requires a separate API call.
 
-### Google Places API v1 Support
-
-Geocoder now supports the new Google Places API v1 format by default. The old API is deprecated by Google and will eventually be shut down.
-
-#### Using the Google Places API v1
-
-```ruby
-# Simply use as normal - Geocoder automatically uses the new API format
-Geocoder.search("PLACE_ID", lookup: :google_places_details)
-```
-
-#### Key Differences in the New API
-
-1. New API endpoints:
-   - The library now uses the new `places.googleapis.com/v1/places` endpoint
-
-2. Response format changes:
-   - Field names use camelCase instead of snake_case (e.g., `formattedAddress` instead of `formatted_address`)
-   - Some fields are renamed (e.g., `id` instead of `place_id`, `displayName.text` instead of `name`)
-   - Location coordinates structure is different
-
-3. Field masks:
-   - The API now requires a field mask to specify which fields to return
-   - Default masks are provided, but you can customize them using the `:fields` parameter
-
-#### Customizing Field Masks
+This library uses Google Places API v1. To specify which fields to return in the response, use the `:fields` parameter:
 
 ```ruby
 # Configure specific fields to request
@@ -200,23 +175,23 @@ Geocoder.configure(
 Geocoder.search("PLACE_ID", lookup: :google_places_details, fields: "id,displayName.text,formattedAddress")
 ```
 
-For more details, see the [Google Places API Migration Guide](https://developers.google.com/maps/documentation/places/web-service/migrate-response).
+For available fields, see the [Google Places API field documentation](https://developers.google.com/maps/documentation/places/web-service/data-fields).
 
-### Google Places Search
+### Google Places Search (`:google_places_search`)
 
-The [Google Places Search API](https://developers.google.com/maps/documentation/places/web-service/search) is the geocoding service of Google Places API. It returns very limited location data, but it also returns a `place_id` which can be used with Google Place Details to get more detailed information. For a comparison between this and the regular Google Geocoding API, see https://maps-apis.googleblog.com/2016/11/address-geocoding-in-google-maps-apis.html
+The [Google Places Search API](https://developers.google.com/maps/documentation/places/web-service/search) is the geocoding service of Google Places API. It returns very limited location data, but it also returns a place ID which can be used with Google Place Details to get more detailed information. For a comparison between this and the regular Google Geocoding API, see https://maps-apis.googleblog.com/2016/11/address-geocoding-in-google-maps-apis.html
 
 * **API key**: required
-* **Key signup**: https://code.google.com/apis/console/
-* **Quota**: 1,000 request/day, 100,000 after credit card authentication
+* **Key signup**: https://developers.google.com/maps/documentation/places/web-service/search
+* **Quota**: 100,000 requests/day, 10 requests/second
 * **Region**: world
 * **SSL support**: yes
-* **Languages**: ar, eu, bg, bn, ca, cs, da, de, el, en, en-AU, en-GB, es, eu, fa, fi, fil, fr, gl, gu, hi, hr, hu, id, it, iw, ja, kn, ko, lt, lv, ml, mr, nl, no, pl, pt, pt-BR, pt-PT, ro, ru, sk, sl, sr, sv, tl, ta, te, th, tr, uk, vi, zh-CN, zh-TW (see http://spreadsheets.google.com/pub?key=p9pdwsai2hDMsLkXsoM05KQ&gid=1)
+* **Languages**: worldwide
 * **Extra params**:
-  * `:fields` - requested API response fields (affects pricing, see the [source](https://github.com/alexreisner/geocoder/blob/master/lib/geocoder/lookups/google_places_search.rb) for available fields)
-  * `:locationbias` - bias towards results in or near a specified area, using a string in one of the formats specified in the [API documentation](https://developers.google.com/maps/documentation/places/web-service/search-find-place#locationbias), e.g., `locationbias: "point:-36.8509,174.7645"`
+  * `:fields` - requested API response fields (see the [Google Places API field documentation](https://developers.google.com/maps/documentation/places/web-service/data-fields))
+  * `:locationbias` - bias towards results in or near a specified area, using a string in one of the formats specified in the [API documentation](https://developers.google.com/maps/documentation/places/web-service/search-text#locationbias)
 * **Documentation**: https://developers.google.com/maps/documentation/places/web-service/search
-* **Terms of Service**: https://developers.google.com/maps/documentation/places/web-service/policies
+* **Terms of Service**: https://developers.google.com/maps/terms
 * **Limitations**: "If your application displays Places API data on a page or view that does not also display a Google Map, you must show a "Powered by Google" logo with that data."
 * **Notes**:
   * You can set the default fields and/or location bias for all queries in the Geocoder configuration, for example:

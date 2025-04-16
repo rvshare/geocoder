@@ -51,7 +51,7 @@ module Geocoder::Lookup
     def results(query)
       return [] unless doc = fetch_data(query)
 
-      # For the new Places API, check for error in a different way
+      # Handle Places API v1 error format
       if doc.is_a?(Hash) && doc.has_key?('error')
         case doc['error']['status']
         when "RESOURCE_EXHAUSTED"
@@ -67,7 +67,7 @@ module Geocoder::Lookup
         return []
       end
 
-      # For legacy API
+      # Handle legacy API format
       case doc['status']
       when "OK" # OK status implies >0 results
         return doc[result_root_attr]
