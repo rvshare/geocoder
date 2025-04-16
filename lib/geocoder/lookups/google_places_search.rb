@@ -70,8 +70,7 @@ module Geocoder
         params[:regionCode] = query.options[:region] if query.options[:region]
         # Allow custom params for tests or other needs
         params.merge!(query.options[:params] || {})
-        # Merge with base params cautiously, removing handled keys
-        super(query).reject { |k, v| params.key?(k) }.merge(params)
+        params # Return only v1-specific and custom params
       end
 
       # Override make_api_request for v1 POST
@@ -139,38 +138,6 @@ module Geocoder
             Geocoder.log(:warn, "#{name} API error: invalid argument (#{doc['error']['message']}).")
         else
           Geocoder.log(:warn, "#{name} API error: #{doc['error']['status']} (#{doc['error']['message']}).")
-        end
-      end
-
-      # --- Test Compatibility --- (Add this if needed, was not in master)
-      # For test compatibility only
-      def query_url(query)
-        if query.options[:legacy_test_compatibility] || ENV["GEOCODER_TEST"]
-          # Generate the *old* URL format for tests
-          endpoint = "//maps.googleapis.com/maps/api/place/findplacefromtext/json"
-          # Construct old params similar to master's query_url_google_params
-          params = {
-            input: query.text,
-            inputtype: "textquery",
-            key: configuration.api_key,
-            language: query.language || configuration.language
-          }
-
-          if (bias = locationbias(query))
-            params[:locationbias] = bias
-          end
-
-          # Use the fields() method we kept, but format for URL param
-          fields_param = fields(query)
-          params[:fields] = fields_param if fields_param
-
-          params.merge!(query.options[:params] || {})
-
-          paramstring = params.compact.map { |k,v| "#{k}=#{URI.encode_www_form_component(v.to_s)}" }.join('&')
-          "#{protocol}:#{endpoint}?#{paramstring}"
-        else
-          # For real requests, use the standard mechanism
-          super
         end
       end
     end
