@@ -30,7 +30,7 @@ module Geocoder
         "#{protocol}://places.googleapis.com/v1/places:searchText?"
       end
 
-      # Logic to determine fields for the field mask (from master)
+      # Logic to determine fields for the field mask
       def fields(query)
         if query.options.has_key?(:fields)
           return format_fields(query.options[:fields])
@@ -38,10 +38,10 @@ module Geocoder
         if configuration.has_key?(:fields)
           return format_fields(configuration[:fields])
         end
-        default_fields # Use v1 default if not specified
+        default_fields
       end
 
-      # Replace default_fields with v1 defaults
+      # v1 default fields
       def default_fields
         [
           "id", "displayName.text", "formattedAddress", "location", "types",
@@ -50,30 +50,28 @@ module Geocoder
         ].join(',')
       end
 
-      # Helper to format fields (same as master)
+      # Helper to format fields
       def format_fields(*fields)
         flattened = fields.flatten.compact
         return nil if flattened.empty?
         flattened.join(',')
       end
 
-      # Location bias helper (from master)
+      # Location bias helper
       def locationbias(query)
         query.options[:locationbias] || configuration[:locationbias]
       end
 
-      # Define v1 URL parameters (minimal - most go in body)
+      # Define v1 URL parameters
       def query_url_params(query)
         params = {}
-        # Keep language/region here if needed, though often in body for v1 Search
         params[:languageCode] = query.language || configuration.language if query.language || configuration.language
         params[:regionCode] = query.options[:region] if query.options[:region]
-        # Allow custom params for tests or other needs
         params.merge!(query.options[:params] || {})
-        params # Return only v1-specific and custom params
+        params
       end
 
-      # Override make_api_request for v1 POST
+      # v1 POST request implementation
       def make_api_request(query)
         uri = URI.parse(query_url(query))
 
@@ -92,16 +90,13 @@ module Geocoder
           textQuery: query.text
         }
 
-        # Add optional params to body
         body[:locationBias] = locationbias(query) if locationbias(query)
         body[:languageCode] = query.language || configuration.language if query.language || configuration.language
         body[:regionCode] = query.options[:region] if query.options[:region]
 
-        # Use includedFields for the field mask in the v1 API
-        fields_mask = fields(query) # Use the fields logic
+        fields_mask = fields(query)
         if fields_mask
           body[:includedFields] = {
-            # Ensure it's an array of strings
             paths: fields_mask.is_a?(Array) ? fields_mask : fields_mask.split(',')
           }
         end
@@ -109,22 +104,19 @@ module Geocoder
         JSON.generate(body)
       end
 
-      # Override results to handle v1 error/structure
+      # Handle v1 API results
       def results(query)
         doc = fetch_data(query)
         return [] unless doc
 
-        # Handle v1 errors
         if doc['error']
           handle_error(doc)
           return []
         end
 
-        # v1 returns places under the 'places' key (use result_root_attr)
         doc[result_root_attr] || []
       end
 
-      # --- Helper for error handling (similar to Places Details) ---
       def handle_error(doc)
         case doc['error']['status']
         when 'RESOURCE_EXHAUSTED'
