@@ -1,8 +1,8 @@
-require 'geocoder/lookups/google_base'
+require 'geocoder/lookups/base'
 require "geocoder/results/google"
 
 module Geocoder::Lookup
-  class Google < GoogleBase
+  class Google < Base
 
     def name
       "Google"
