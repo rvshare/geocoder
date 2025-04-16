@@ -4,19 +4,19 @@ module Geocoder::Result
   class GooglePlacesDetails < Google
 
     def coordinates
-      if @data.dig('location')
-        [@data.dig('location', 'latitude'), @data.dig('location', 'longitude')]
+      if loc = @data.dig('location')
+        [loc['latitude'], loc['longitude']]
       else
         []
       end
     end
 
-    def address
-      formatted_address
+    def formatted_address
+      @data['formattedAddress'] || super
     end
 
-    def formatted_address
-      @data['formattedAddress']
+    def address
+      formatted_address
     end
 
     def name
@@ -24,7 +24,7 @@ module Geocoder::Result
     end
 
     def place_id
-      @data["id"]
+      @data['id']
     end
 
     def types
@@ -69,17 +69,11 @@ module Geocoder::Result
     end
 
     def open_hours
-      if @data['regularOpeningHours'] && @data['regularOpeningHours']['periods']
-        @data['regularOpeningHours']['periods']
-      else
-        []
-      end
+      @data.dig('regularOpeningHours', 'periods') || []
     end
 
     def open_now
-      if @data['regularOpeningHours']
-        @data.dig('regularOpeningHours', 'openNow')
-      end
+      @data.dig('regularOpeningHours', 'openNow')
     end
 
     def permanently_closed?
@@ -146,12 +140,8 @@ module Geocoder::Result
       return nil if components.empty?
 
       component = components.first
-
-      if value_type == 'short_name'
-        component['shortText']
-      else # long_name
-        component['longText']
-      end
+      key = (value_type == 'short_name') ? 'shortText' : 'longText'
+      component[key]
     end
   end
 end
