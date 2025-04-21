@@ -1,41 +1,173 @@
 {
-   "candidates" : [
-      {
-         "formatted_address" : "4 Pennsylvania Plaza, New York, NY 10001, United States",
-         "geometry" : {
-            "location" : {
-               "lat" : 40.75050450000001,
-               "lng" : -73.9934387
-            },
-            "viewport" : {
-               "northeast" : {
-                  "lat" : 40.7523981,
-                  "lng" : -73.98975269999997
-               },
-               "southwest" : {
-                  "lat" : 40.7485721,
-                  "lng" : -73.9963951
-               }
-            }
-         },
-         "icon" : "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
-         "id" : "55e3174d410b31da010030a7dfc0c9819027445a",
-         "name" : "Madison Square Garden",
-         "photos" : [
+  "places": [
+    {
+      "id": "ChIJhRwB-yFawokR5Phil-QQ3zM",
+      "types": [
+        "arena",
+        "tourist_attraction",
+        "stadium",
+        "sports_club",
+        "sports_complex",
+        "sports_activity_location",
+        "event_venue",
+        "point_of_interest",
+        "establishment"
+      ],
+      "formattedAddress": "New York, NY 10001, USA",
+      "location": {
+        "latitude": 40.7505045,
+        "longitude": -73.9934387
+      },
+      "rating": 4.7,
+      "websiteUri": "https://www.msg.com/madison-square-garden",
+      "businessStatus": "OPERATIONAL",
+      "userRatingCount": 30636,
+      "displayName": {
+        "text": "Madison Square Garden",
+        "languageCode": "en"
+      },
+      "photos": [
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcJvwA4kMHcdrvKUAvAQImB3IqpUa3mZ2CxQRqz6uhFVSdZ7BXdHZotebpiScZ6kalb4a86Fh07bxZfrSnFH8CUkuP2nyThMYyA6-b2fVA4jpS5p_bOWVhQsc_4xiZlpUpeQDgnMR3hPk_kjknG5NVq6CtBO3KSJEIEfrpomR0QNF_uwwQhGGv9-9skmtsnrspl1JUPNHB8FDBP6E5sXYVr7cnjkSX6ozfKf_FfOTSw75Iw3ESVZV8fGGRWUdQsSoOq7ywWcib968jdFP8iVbiq2mAUkMLNh90-SYAZNaBINzb7cSSUBQsclrc_V_Phixxmc4ZvwCJDancEuFzYofx9JpltW9AYG1ukJCzioiO4-ldHTmgup1ENC4McB97Y-hqlHAnaWPNat814Fc_8SEpQExP0lbxmD2KIepojQScoBicg3",
+          "widthPx": 1078,
+          "heightPx": 719,
+          "authorAttributions": [
             {
-               "height" : 3904,
-               "html_attributions" : [
-                  "\u003ca href=\"https://maps.google.com/maps/contrib/117796018192827964147/photos\"\u003eAntonio Vera\u003c/a\u003e"
-               ],
-               "photo_reference" : "CoQBdwAAAJSRc-oTDFp3lkRwkyDN85h49Inw9YRC8U2sPUDeV0FSKzQNMxKfswp27o4Eh8gt1U6ZLPYES3RCP-2zJPswcVMtQOE9NxxM9Yg7SJllFYcC1GR_yjCJw6OGTP3_OCaL-gFI1_r54-04veyCc-UNtzjF836se6yQlSGd643zBy3_EhCYKtc3tY024iyO-6xPZUzzGhRcgC0A-itlFq-U2qmYbPde4gJU7Q",
-               "width" : 3152
+              "displayName": "Toni Lamberttuchi Fettuchini",
+              "uri": "https://maps.google.com/maps/contrib/118124974365696416566",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjX9S7XF6MT1eSYD8GUpZqkbBo-jtJPylcczRiU6xB-GvUte6D1RqQ=s100-p-k-no-mo"
             }
-         ],
-         "place_id" : "ChIJhRwB-yFawokR5Phil-QQ3zM",
-         "rating" : 4.5,
-         "reference" : "CmRRAAAAqb-Y-BFyZh54ipS97aLZCfQYVVI_l87_7HQxJAXMx3rI29XzscexUUiwt7kLbr4YeDaggMQ78coK-V_yGztNvhsGbq2OsrdR-BmVpecrNGbiE9fNDPsPGvdxKcB3SPbAEhDTgnyzjLY1p7IPh2M4L9KnGhS7ZZMAtvVKPnjoCnaWP9IzdzRC4w",
-         "types" : [ "stadium", "point_of_interest", "establishment" ]
-      }
-   ],
-   "status" : "OK"
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIC65qm60wE&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIC65qm60wE!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcJUyQ3GoVj1ioXvJRBOWvH4_Bqr5vX_xW4IpIDX8hfEkjibuiNU6rBZtpxZ-M3IyvOsuaLVYIZLgbu0Is1Ed9PhqQrbpJW7FhOyRNtzS2ZPbq08FT6AOKZZzWVcWD-_HGhdcPw4iTx8bZVXh82fd8zMgtXOLW9BK-IAfnb8uP0dpqfMksXG_KeRESzjE1bc3CRDlsw5H-T7mM7rBnaWOAuSaok5JE_Cj9uoT0PS12UZrKtM8XPqVrFBKq89cz8OoLlK8qHox9Q0BtEM4ouQiHRKZVzTavlPsCRj58Q6R221xBV51LC0SIn1btqC0BGElEpJsOJveaaQa30OTrR_T8FJyntsPrLf_YNuLkvM4CHV_mnOY6PHv5K-wZFBSya99wEBmO-sh3mlT5IwHTg1ReyJR5R8BgtyJ_3m4Bu6dAMze6nf",
+          "widthPx": 4032,
+          "heightPx": 3024,
+          "authorAttributions": [
+            {
+              "displayName": "M M",
+              "uri": "https://maps.google.com/maps/contrib/115041281013818164662",
+              "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocJAYC4atsQZuQWvrpVGJEoOK9uKlYAIMi_zJ93USMWm6KkDbg=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIC5xIWX8gE&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIC5xIWX8gE!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcL9oTWCN3ds3sIVrrRqS27qJFtXrskbk1Z8-nHPRP2rMFMtHeuJ8pUuLLZsTnv_QqLwteOecEQ1PPs88eipiJO2oYNSExF0hjnF5B9OR9biLg8vwhckqlPgxTJg1ycvtryzd3MZrGkihGTIyivyFnB2kGU_EAtQ2lnkx4roPd6719Y908XPblvQ_B9sw73_OYLEaeUzh0y62jqJAmV8SCtcEKNKXsT8Th1nk12Bjh8DqedJw_Lv6hcCcDSHk1gFuk4VQ9BaiBBkFw4AbcvXieOa46sGCuk7hrr1aDCF96cqHGm16S9D19Sr9GYVbC9iJlmOQSHO4jPn8vAuuyx5qUO6lhqayHU97Oh-O7ao5bfk8cGqTgaEiEii1kpjBH_21hGgdg2zogf6C9OJGRwKU-4xz_vqHHdJ7PQnMVM",
+          "widthPx": 4032,
+          "heightPx": 3024,
+          "authorAttributions": [
+            {
+              "displayName": "Moi Dci",
+              "uri": "https://maps.google.com/maps/contrib/107553381777785543902",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjWNpVv-RyC4pX9rjqZF4pFMZyt4FOJOHgibUbx4L5nQIOvGlUU=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgICBm9Al&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgICBm9Al!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcJHuY_CtBb2j2MJYSoo9TUAkyxAsAD2nGsB6rZX-wR1U6xxLrrK5Y_1UjfiWGsEWkrTdAafqLsU5s9puSIjdyH-hu1slVJqGVR-iuhHa1Qp11LDns8J5LWNkPYyWo_djuFlQ8KSYZ-VoIy9nBDQrQ0HFpGK_nh9W6HY7CLL8bI6EI4V0MBc_PW5rTpf0ek5qBaTwXBTyUQroAA9iBR0hJ9-fBhzdXBRTfGwPziqoYXoBTLlYrA6DcUfD3sNAew35bn3Ynqj0MRIQPW6Dw2UhQXqjXdIJdgU--Juuw051PK__PN6KuKMiQ9UEpz77oKRRsWP5gW53uDLbus6nr4ZS5hR3mSHIVVGma0S_WTVJjOpn-1UkY5WDAmTAORb0R5JW-sl1XB1abKLJbwh6vpN1RxARwm6eozZ8ANR8Ja1xTp9u0E",
+          "widthPx": 4032,
+          "heightPx": 2268,
+          "authorAttributions": [
+            {
+              "displayName": "Danny Wild",
+              "uri": "https://maps.google.com/maps/contrib/116873726587761581046",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjVXf3b2lmOmZi13w-i73ObEesMvnwSL3ASddIoiTrSC2tGxuJ3T=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIChp_XA7AE&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIChp_XA7AE!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcJXjCcJDHfZ-I0S3fjZPKg5lMzVOyJ4WPZR9NLimxQd4zq3P8y4cjI_Jbq7wW6ljQD-NcGZICxnQpvVl5bk3ccJMDawoPaBJUIrsw1D2MM2bBV8Wv-h6DDXy5Ye6Fbohvhxck9cU6kPEyUIFMKBseECSv5GgxZTxHK0ljFTnrJlhzxkWz4qaREd9WJs_oBKvb3DATU0Zx_dDfmhliixHaozXrMDLjl1LtkkM589jNWLlUOqCBcaJ0B75qssbaR4lCC8XswUhPFiP7RFk_Vv6L08-Ua-Ev039SIpS7jMZEXrvnQ7Y-eGYo_VNmHfnQaPN-lGBpKygqZ0LZSShrc3xdjTQbuSvt19NzmxxejAS8NtJnhosnxroELu0vR3iY62gAH8VAfYf7ma-AJ_lyhO-t9MPY8MEm6NMUcJbyxhz98uuQ",
+          "widthPx": 4032,
+          "heightPx": 3024,
+          "authorAttributions": [
+            {
+              "displayName": "nicolas giblasse",
+              "uri": "https://maps.google.com/maps/contrib/103016961643673057586",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXfCuhCCjgh4zJ2Tde3PRk2tY6WnRUsS32LWeHjPJ3zPMBRfpH3=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIDkhNu4Yg&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIDkhNu4Yg!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcIPh-_sFpq3SoT8CwnngObkJX8_YrB7-aDxc_somOVkP2jxSeYHsbmldF_LXCeZ1lnQXKPK3yJWymrMYKTzlAjOj7YM-ZvkpcUrFd2Q2D7XiMLHMmyTlS-Hmyk0awX2ydyjDgeNrMaaWkOmhJCcz2mmxj4GcpfVC4LYxAMnrGepIcdfiR6JhLAtMDHutCPIoHdq5X16bduuFKYfCtCae9Jg8cOmNvZLPumputYU7E2Z2B17X6_jILoQ2nV0h0Xe0F0z8T85TMx4JpEEEzqCb2lZFdPiQgtMo5HOTt__KHTw40Mx7-WG8yHsOD3zA2clGiahfrXHIisumnxSxb-J2NJmYOu3NaMO1eEgNh0BeP7-9kVcpCqknHtg9Z35V8bSQqq2L10yikw_RakiI7BHuxEl9Kjh6LoLULlCdM94Ms4kM0q-",
+          "widthPx": 4800,
+          "heightPx": 3199,
+          "authorAttributions": [
+            {
+              "displayName": "Chai Kouch",
+              "uri": "https://maps.google.com/maps/contrib/117351091450366954869",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjWoJKxb3hJG8D4w5ryr3bbSCqthB1WlTwCsXNg8n89kERnFzAUHhA=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgID6pLO8vwE&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgID6pLO8vwE!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcKuCjWTvvLMzAAuG5pQfIRDoYjkE-XkYTpdwr_MaTvmPu1H-1MM5R-HKUztjyB7iMc2l2JvG-XRLRsGjUuttDa8aw3I4YvKtow_zJCNfSBBM9NUT6dne8rIzmVdqlq_KcNNEt8jGgqmfoZAzd7nZYciYWwtaxhh2QC6xcaBBsIkg3Fdi0VPPNyGHMHUrW04zSoq7Jva1kw8u-_zbjenV82zx91UNKnXqP_THpXmH5ZsVLVe_V09UlNoS04KnDoS6ElNea39g1LX6vySJScF_ZYU3ErymRjdnNMyrOf2T4cw1V1FHxYygu5uo13TnhjjiNFpKMPuLmgw-suNd88IFcJE5IuYeadBHs8yvPXXRyolATk_ovozxxk0sIGDlfQvOCN_67P0JazYam733qzfsIfyPR4dAYCU4JC9bQ48E6z03w",
+          "widthPx": 871,
+          "heightPx": 645,
+          "authorAttributions": [
+            {
+              "displayName": "Dennis",
+              "uri": "https://maps.google.com/maps/contrib/114711364320437879226",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjUOOy6aYV7v--OhvCszLrNvjff59njUDWgJ1d7RA7ndU_v6E99E=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIDOl_67SQ&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIDOl_67SQ!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcIShtJPk8r4oV7WtNJwEOzUOPryRG7b_3kae1NLJ_yhfWbPdDZEpZ8zLTz_4ARmy5e80NmtVDShpHpeaopfhpZ0OFO_2KaVbCJOK-s9yu4tpnDbPzUf6uDYJxMgJ4A9o5E_oPWWayiUd5fhSkYU_a1NU2fmTxAfugYYJy8Picx22FYV7q3kcwCMXO4QHVm9Si1qyHD5eEHwNpPAzfJrB8RAywAUVEAylNYVcdCouOtAQ3cP0G16s1kPMoMUtRCC_aEOWWBj2GsOjXuPwH5XR8exf0shNi8BocBg-g8uFvkfGsPxQ7phV4VLJNxe88jKmAcq9PbhfLv40X2JJ2K5r-9oOrbyhhOX0uxIHuyXxyaPKdwsiyxJVIuOvvvr1XdZmBpEP_TcDWnXdFsG8IQTUKGb1_4918xAYWVyqHSIH1eVJ8ID",
+          "widthPx": 612,
+          "heightPx": 408,
+          "authorAttributions": [
+            {
+              "displayName": "Mukesh Chavda",
+              "uri": "https://maps.google.com/maps/contrib/105199390324758358518",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjUaNhkCvF9_q-vo4KRWJCs85MGkwRpVp6V90NQkVBxeIl-LzwimIg=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIC6rbTaogE&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIC6rbTaogE!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcIN6lcEXqwmv2m2iextfk475q3yJxYHIsOaMoDr8vJKGYz-nv5nqlWfwiRMaKPq_R26ic_Gvye1MNZT13YpeDkCf-eSdQd0WiFK-WUuBe3lvZtuEjv9_si0q9y4wWE1Ektxz0CqjnDMoeUyGao-JsRiJYrxbSfI8cSIgSs3tfm6tpiqlEDdaNO34CrLEHwCPRk43YHNSFZ_vK4Ouk0L8D0-zPIhWJtVQCwA5qYR_i1eyYDRF652KZ7ZdWqZ1FctC4mtbBo3SpyRgkbDSMiUdQ6onJtsMd7l49NSl_DmM_X0kL1rgihmGR4bXQeHuLzpw0L5478h-ed_BKGrTd1RWzME4TFU1Se7cmPEosjp325KTRpmlnmsilsj6Xqwf8olwHoFnFEeioMvsmYMbGz0mJB8Gxmrk31epQz0MYb2afrQpw",
+          "widthPx": 4000,
+          "heightPx": 3000,
+          "authorAttributions": [
+            {
+              "displayName": "David A.",
+              "uri": "https://maps.google.com/maps/contrib/113490415192295325900",
+              "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXKfwaDlxEVwLi7pDYWi-YTaiAlv4gyU7-ySrnmekV9PmCVMndw0Q=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIDOueCXWw&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIDOueCXWw!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        },
+        {
+          "name": "places/ChIJhRwB-yFawokR5Phil-QQ3zM/photos/AeeoHcKJWJi_KtV3IHdcewfA0nM6Znhn6V1zXvrQKnOW2jEk6QR2e9f6hY13BjUN5eSEIIGiGLgvUOgd_nfFUzBFggfs9OpONrwEkQfPLnH6S0vsiGtf1E3WCBnZr9wHqmrI5-5rvApsEaPoC1kA-zSyy_aRV_N6cYJVgn01BGX-RAnBebyRQ8N9c4k2Ac_7Xkdb4BGr59iiIgRQJBgkwEQj088IK4a9lxA8cImIV7wtxkiRAE_K_SAryIrtVMya4MpHq_r2QiG4ARRCCxBLERe33zD9XzF6PQnS25RNPUn0rRGO5tGRg0GNQNBBwjjvv5FwBtX2GMMUm8Jipsgdf99V6oamksdQcDp1mSE1W8Mwdbz7KVLEvjnoT3W-mULOpdboHUBqndUDBLlvsZ3_1VsSrzkrGWJcUSG1uWCfQnoy1KOM9g",
+          "widthPx": 3264,
+          "heightPx": 2448,
+          "authorAttributions": [
+            {
+              "displayName": "Christian Torres",
+              "uri": "https://maps.google.com/maps/contrib/108145832080200486107",
+              "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocI0q9AwLeYiwfJFLYZNWiaxOA13Iypq6O9AaRPJNwKRuIQjIA=s100-p-k-no-mo"
+            }
+          ],
+          "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sCIHM0ogKEICAgIDG2ODgJw&hl=en-US",
+          "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIDG2ODgJw!2e10!4m2!3m1!1s0x89c25a21fb011c85:0x33df10e49762f8e4"
+        }
+      ]
+    }
+  ]
 }
