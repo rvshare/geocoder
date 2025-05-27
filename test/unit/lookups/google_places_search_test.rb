@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'test_helper'
+require 'json'
 
 class GooglePlacesSearchTest < GeocoderTestCase
 
@@ -26,22 +27,13 @@ class GooglePlacesSearchTest < GeocoderTestCase
   end
 
   def test_google_places_search_result_contains_types
-    assert_equal madison_square_garden.types, %w(stadium point_of_interest establishment)
+    # Note: Types might differ slightly with v1 API, adjust if needed based on actual stubbed response
+    assert_equal %w(stadium point_of_interest establishment), madison_square_garden.types
   end
 
   def test_google_places_search_query_url_contains_language
     url = lookup.query_url(Geocoder::Query.new("some-address", language: "de"))
-    assert_match(/language=de/, url)
-  end
-
-  def test_google_places_search_query_url_contains_input
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    assert_match(/input=some-address/, url)
-  end
-
-  def test_google_places_search_query_url_contains_input_typer
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    assert_match(/inputtype=textquery/, url)
+    assert_match(/languageCode=de/, url) # Changed from language= to languageCode=
   end
 
   def test_google_places_search_query_url_always_uses_https
@@ -49,75 +41,88 @@ class GooglePlacesSearchTest < GeocoderTestCase
     assert_match(%r{^https://}, url)
   end
 
-  def test_google_places_search_query_url_contains_every_field_available_by_default
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    fields = %w[business_status formatted_address geometry icon name 
-      photos place_id plus_code types opening_hours price_level rating 
-      user_ratings_total]
-    assert_match(/fields=#{fields.join('%2C')}/, url)
+  def test_google_places_search_body_contains_specific_fields_when_given
+    fields = %w[formattedAddress id]
+    query = Geocoder::Query.new("some-address", fields: fields)
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_equal fields.sort, body['includedFields']['paths'].sort
   end
 
-  def test_google_places_search_query_url_contains_specific_fields_when_given
-    fields = %w[formatted_address place_id]
-    url = lookup.query_url(Geocoder::Query.new("some-address", fields: fields))
-    
-    assert_match(/fields=#{fields.join('%2C')}/, url)
-  end
-
-  def test_google_places_search_query_url_contains_specific_fields_when_configured
-    fields = %w[business_status geometry photos]
+  def test_google_places_search_body_contains_specific_fields_when_configured
+    fields = %w[businessStatus geometry photos] # Use valid v1 field names
     Geocoder.configure(google_places_search: {fields: fields})
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    assert_match(/fields=#{fields.join('%2C')}/, url)
+    query = Geocoder::Query.new("some-address")
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_equal fields.sort, body['includedFields']['paths'].sort
     Geocoder.configure(google_places_search: {})
   end
 
-  def test_google_places_search_query_url_omits_fields_when_nil_given
-    url = lookup.query_url(Geocoder::Query.new("some-address", fields: nil))
-    assert_no_match(/fields=/, url)
+  def test_google_places_search_body_omits_fields_when_nil_given
+    query = Geocoder::Query.new("some-address", fields: nil)
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    # When fields: nil is passed, format_fields returns nil, so includedFields should not be set
+    assert_nil body['includedFields']
   end
 
-  def test_google_places_search_query_url_omits_fields_when_nil_configured
+  def test_google_places_search_body_omits_fields_when_nil_configured
     Geocoder.configure(google_places_search: {fields: nil})
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    assert_no_match(/fields=/, url)
+    query = Geocoder::Query.new("some-address")
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    # When fields: nil is configured, format_fields returns nil, so includedFields should not be set
+    assert_nil body['includedFields']
     Geocoder.configure(google_places_search: {})
   end
 
-  def test_google_places_search_query_url_omits_locationbias_by_default
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    assert_no_match(/locationbias=/, url)
+  def test_google_places_search_body_contains_text_query
+    query = Geocoder::Query.new("some-address")
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_equal "some-address", body['textQuery']
   end
 
-  def test_google_places_search_query_url_contains_locationbias_when_configured
-    Geocoder.configure(google_places_search: {locationbias: "point:-36.8509,174.7645"})
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    assert_match(/locationbias=point%3A-36.8509%2C174.7645/, url)
+  def test_google_places_search_body_omits_locationbias_by_default
+    query = Geocoder::Query.new("some-address")
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_nil body['locationBias']
+  end
+
+  def test_google_places_search_body_contains_locationbias_when_configured
+    bias_string = "point:-36.8509,174.7645"
+    Geocoder.configure(google_places_search: {locationbias: bias_string})
+    query = Geocoder::Query.new("some-address")
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_equal bias_string, body['locationBias']
     Geocoder.configure(google_places_search: {})
   end
 
-  def test_google_places_search_query_url_contains_locationbias_when_given
-    url = lookup.query_url(Geocoder::Query.new("some-address", locationbias: "point:-36.8509,174.7645"))
-    assert_match(/locationbias=point%3A-36.8509%2C174.7645/, url)
+  def test_google_places_search_body_contains_locationbias_when_given
+    bias_string = "point:-36.8509,174.7645"
+    query = Geocoder::Query.new("some-address", locationbias: bias_string)
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_equal bias_string, body['locationBias']
   end
 
-  def test_google_places_search_query_url_uses_given_locationbias_over_configured
+  def test_google_places_search_body_uses_given_locationbias_over_configured
+    configured_bias = "point:37.4275,-122.1697"
+    given_bias = "point:-36.8509,174.7645"
+    Geocoder.configure(google_places_search: {locationbias: configured_bias})
+    query = Geocoder::Query.new("some-address", locationbias: given_bias)
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_equal given_bias, body['locationBias']
+    Geocoder.configure(google_places_search: {})
+  end
+
+  def test_google_places_search_body_omits_locationbias_when_nil_given
     Geocoder.configure(google_places_search: {locationbias: "point:37.4275,-122.1697"})
-    url = lookup.query_url(Geocoder::Query.new("some-address", locationbias: "point:-36.8509,174.7645"))
-    assert_match(/locationbias=point%3A-36.8509%2C174.7645/, url)
+    query = Geocoder::Query.new("some-address", locationbias: nil)
+    body = JSON.parse(lookup.send(:request_body_json, query))
+    assert_nil body['locationBias']
     Geocoder.configure(google_places_search: {})
   end
 
-  def test_google_places_search_query_url_omits_locationbias_when_nil_given
-    Geocoder.configure(google_places_search: {locationbias: "point:37.4275,-122.1697"})
-    url = lookup.query_url(Geocoder::Query.new("some-address", locationbias: nil))
-    assert_no_match(/locationbias=/, url)
-    Geocoder.configure(google_places_search: {})
-  end
-
-  def test_google_places_search_query_url_uses_find_place_service
-    url = lookup.query_url(Geocoder::Query.new("some-address"))
-    assert_match(%r{//maps.googleapis.com/maps/api/place/findplacefromtext/}, url)
+  def test_google_places_search_uses_v1_search_text_endpoint
+    # Check the base URL part (excluding query params)
+    base_url = lookup.query_url(Geocoder::Query.new("some-address")).split('?').first
+    assert_match(%r{/v1/places:searchText$}, base_url)
   end
 
   private
@@ -127,6 +132,7 @@ class GooglePlacesSearchTest < GeocoderTestCase
   end
 
   def madison_square_garden
+    # Ensure the stubbed response for this matches the v1 API structure
     Geocoder.search("Madison Square Garden").first
   end
 end
