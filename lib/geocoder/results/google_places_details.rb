@@ -93,8 +93,18 @@ module Geocoder::Result
       end
     end
 
-    def city
+    def locality
       address_component('locality', 'long_name')
+    end
+
+    def sublocality
+      address_component('sublocality', 'long_name')
+    end
+
+    def city
+      return locality unless locality.blank?
+
+      sublocality
     end
 
     def state
