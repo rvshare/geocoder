@@ -93,8 +93,29 @@ module Geocoder::Result
       end
     end
 
-    def city
+    def locality
       address_component('locality', 'long_name')
+    end
+
+    def sublocality
+      address_component('sublocality', 'long_name')
+    end
+
+    def administrative_area_level_3
+      address_component('administrative_area_level_3', 'long_name')
+    end
+
+    def administrative_area_level_2
+      address_component('administrative_area_level_2', 'long_name')
+    end
+
+    def city
+      fields = [:locality, :sublocality, :administrative_area_level_3, :administrative_area_level_2]
+
+      fields.each do |field|
+        value = send(field)
+        return value unless value.blank?
+      end
     end
 
     def state
