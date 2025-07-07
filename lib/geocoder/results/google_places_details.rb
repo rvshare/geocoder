@@ -15,6 +15,9 @@ module Geocoder
         @data["reviews"] || []
       end
 
+      nil
+    end
+
       def rating
         @data["rating"]
       end
