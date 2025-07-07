@@ -660,6 +660,19 @@ IP Address Lookups
 * **Documentation**: https://ipinfo.io/developers
 * **Terms of Service**: https://ipinfo.io/terms-of-service
 
+### IPInfo.io Lite (`:ipinfo_io_lite`)
+
+A free-tier API access plan, which includes unlimited country-level geolocation information and unlimited basic ASN information. Geolocation information provided by the Lite API service includes country and continent information, while ASN information includes ASN, organization name, and domain name.
+
+* **API key**: required
+* **Quota**: none
+* **Region**: world
+* **SSL support**: yes
+* **Languages**: English
+* **Documentation**: https://ipinfo.io/developers/lite-api
+* **Terms of Service**: https://ipinfo.io/terms-of-service
+* **Limitations**: country-level geolocation information and basic ASN information only
+
 ### IPQualityScore (`:ipqualityscore`)
 
 * **API key**: required - see https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test
@@ -719,7 +732,7 @@ IP Address Lookups
 ### Pointpin (`:pointpin`)
 
 * **API key**: required
-* **Quota**: 50,000/mo for €9 through 1m/mo for €49
+* **Quota**: 2.5M/mo for $12 through 75M/mo for $149
 * **Region**: world
 * **SSL support**: yes
 * **Languages**: English
