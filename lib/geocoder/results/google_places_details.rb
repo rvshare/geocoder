@@ -116,6 +116,8 @@ module Geocoder::Result
         value = send(field)
         return value unless value.blank?
       end
+
+      nil
     end
 
     def state
